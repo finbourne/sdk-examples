@@ -38,7 +38,7 @@ namespace Sdk.Examples.Tutorials.Ibor
             //    add initial batch of transactions
             var initialResult = ApiFactory.Api<ITransactionPortfoliosApi>().UpsertTransactions(TestDataUtilities.TutorialScope, portfolioRequest.Code, newTransactions);
 
-            var asAtBatch1 = initialResult.Version.AsAtDate;
+            var asAtBatch1 = initialResult._Version.AsAtDate;
             Thread.Sleep(500);
 
             //    add another transaction for 2018-1-8
@@ -47,7 +47,7 @@ namespace Sdk.Examples.Tutorials.Ibor
                 TestDataUtilities.BuildTransactionRequest(_instrumentIds[3], 100, 104, "GBP", new DateTimeOffset(2018, 1, 8, 0, 0, 0, TimeSpan.Zero), "Buy"),
             });
 
-            var asAtBatch2 = laterResult.Version.AsAtDate;
+            var asAtBatch2 = laterResult._Version.AsAtDate;
             Thread.Sleep(500);
 
             //    add back-dated transaction
@@ -56,7 +56,7 @@ namespace Sdk.Examples.Tutorials.Ibor
                 TestDataUtilities.BuildTransactionRequest(_instrumentIds[4], 100, 105, "GBP", new DateTimeOffset(2018, 1, 5, 0, 0, 0, TimeSpan.Zero), "Buy"),
             });
 
-            var asAtBatch3 = backDatedResult.Version.AsAtDate;
+            var asAtBatch3 = backDatedResult._Version.AsAtDate;
             Thread.Sleep(500);
 
             //    list transactions

@@ -1,11 +1,11 @@
 using Lusid.Sdk.Api;
-using Lusid.Sdk.Utilities;
+using Lusid.Sdk.Extensions;
 
 namespace Sdk.Examples.Utilities
 {
     public class TutorialBase
     {
-        internal readonly ILusidApiFactory ApiFactory;
+        internal readonly IApiFactory ApiFactory;
         internal readonly ITransactionPortfoliosApi TransactionPortfoliosApi;
         internal readonly IInstrumentsApi InstrumentsApi;
         internal readonly IQuotesApi QuotesApi;

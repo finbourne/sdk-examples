@@ -2,8 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Lusid.Sdk.Api;
+using Lusid.Sdk.Extensions;
 using Lusid.Sdk.Model;
-using Lusid.Sdk.Utilities;
 
 namespace Sdk.Examples.Example
 {
@@ -13,7 +13,7 @@ namespace Sdk.Examples.Example
         {
             // tag::create-client-factory[]
             var secretsFile = "secrets.json";
-            var apiFactory = LusidApiFactoryBuilder.Build(secretsFile);
+            var apiFactory = ApiFactoryBuilder.Build(secretsFile);
             // end::create-client-factory[]
 
             // tag::create-tx-portfolios-api[]

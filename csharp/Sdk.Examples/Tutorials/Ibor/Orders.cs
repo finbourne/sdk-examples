@@ -417,7 +417,7 @@ namespace Sdk.Examples.Tutorials.Ibor
             Assert.That(upsertResult.Values.Count, Is.EqualTo(3));
             Assert.That(upsertResult.Values.Single(rl => rl.Id.Code.Equals(order1)).LusidInstrumentId, Is.EqualTo(_instrumentIds.First()));
 
-            var t = upsertResult.Values.First().Version.AsAtDate;
+            var t = upsertResult.Values.First()._Version.AsAtDate;
 
             var order1Filter = $"{order1}";
             var order2Filter = $"{order2}";

@@ -61,7 +61,7 @@ namespace Sdk.Examples.Tutorials.Ibor
             var finalResult = ApiFactory.Api<ITransactionPortfoliosApi>().UpsertTransactions(TestDataUtilities.TutorialScope, portfolioRequest.Code, todaysTransactions);
 
             //Using the last result find out its AsAtDate (based on the servers clock at the time of the test)
-            var finalAsAtTime = finalResult.Version.AsAtDate;
+            var finalAsAtTime = finalResult._Version.AsAtDate;
 
             //So now we have the portfolio with 2 days worth of transactions, going to reconcile from T-1 20:00 to now,
             //this should reflect breaks for each instrument equal to the transactions from yesterday till 20 today. 

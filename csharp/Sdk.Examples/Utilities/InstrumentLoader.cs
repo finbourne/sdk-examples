@@ -3,16 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using Lusid.Sdk.Api;
 using Lusid.Sdk.Model;
-using Lusid.Sdk.Utilities;
+using Lusid.Sdk.Extensions;
 using NUnit.Framework;
 
 namespace Sdk.Examples.Utilities
 {
     public class InstrumentLoader
     {
-        private readonly ILusidApiFactory _apiFactory;
+        private readonly IApiFactory _apiFactory;
 
-        public InstrumentLoader(ILusidApiFactory apiFactory)
+        public InstrumentLoader(IApiFactory apiFactory)
         {
             _apiFactory = apiFactory ?? throw new ArgumentNullException(nameof(apiFactory));
         }
