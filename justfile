@@ -1,5 +1,5 @@
 test-csharp:
-    docker run \
+    docker run -t \
         -e FBN_LUSID_API_URL=${FBN_LUSID_API_URL} \
         -e FBN_TOKEN_URL=${FBN_TOKEN_URL} \
         -e FBN_ACCESS_TOKEN=${FBN_ACCESS_TOKEN} \
