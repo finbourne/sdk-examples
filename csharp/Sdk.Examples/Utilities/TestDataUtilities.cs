@@ -45,11 +45,11 @@ namespace Sdk.Examples.Utilities
         public static List<decimal> ExampleDiscountFactors2 = new List<decimal> { 1.0m, 0.995026109593975m, 0.990076958773721m, 0.985098445011387m, 0.980144965261876m, 0.9m };
 
         // dummy fixing references to be used in instrument definitions; this simplifies market data construction
-        public static string VanillaSwapFixingReference = "SwapFixingRef";
-        public static string AlternateSwapFixingReference = "AlternateSwapFixingRef"; // could be for some unspecified alternative index e.g. another tenor or another currency
-        public static string RFRFixingReference = "RFRFixingRef";
-        public static string CDORFixingReference = "CDORFixingRef";
-        public static string EquitySwapFixingRef = "EquityFixingRef";
+        public const string VanillaSwapFixingReference = "SwapFixingRef";
+        public const string AlternateSwapFixingReference = "AlternateSwapFixingRef"; // could be for some unspecified alternative index e.g. another tenor or another currency
+        public const string RFRFixingReference = "RFRFixingRef";
+        public const string CDORFixingReference = "CDORFixingRef";
+        public const string EquitySwapFixingRef = "EquityFixingRef";
 
         /// <summary>
         /// Helper method to construct CreateTransactionPortfolioRequest to be used in ITransactionPortfoliosApi

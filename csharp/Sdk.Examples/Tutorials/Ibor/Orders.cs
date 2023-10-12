@@ -21,7 +21,7 @@ namespace Sdk.Examples.Tutorials.Ibor
         private InstrumentLoader _instrumentLoader;
         private IList<string> _instrumentIds;
 
-        private readonly IDictionary<string, string> _tutorialScopes = new Dictionary<string, string> { };
+        private readonly IDictionary<string, string> _tutorialScopes = new Dictionary<string, string>();
 
         private readonly IList<string> _tutorialPropertyCodes = new List<string> {
             "TIF",
@@ -418,10 +418,6 @@ namespace Sdk.Examples.Tutorials.Ibor
             Assert.That(upsertResult.Values.Single(rl => rl.Id.Code.Equals(order1)).LusidInstrumentId, Is.EqualTo(_instrumentIds.First()));
 
             var t = upsertResult.Values.First()._Version.AsAtDate;
-
-            var order1Filter = $"{order1}";
-            var order2Filter = $"{order2}";
-            var order3Filter = $"{order3}";
 
             // In order to enable efficient filtering, LUSID indexes upserted data under the hood. Here,
             // we wait for a few seconds whilst this happens.

@@ -13,8 +13,8 @@ namespace Sdk.Examples.Tutorials.Ibor
     public class Transactions : TutorialBase
     {
         private IList<string> _instrumentIds;
-
-
+        private string _portfolioCode;
+        
         [OneTimeSetUp]
         public void OnetimeSetUp()
         {
@@ -23,8 +23,7 @@ namespace Sdk.Examples.Tutorials.Ibor
             var instrumentLoader = new InstrumentLoader(ApiFactory);
             _instrumentIds = instrumentLoader.LoadInstruments();
         }
-
-        internal string _portfolioCode;
+        
         [SetUp]
         public void SetUp()
         {

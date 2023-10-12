@@ -43,8 +43,9 @@ namespace Sdk.Examples.Tutorials.MarketData
                 //If the corporate action source already exists, simply return
                 if (errorObj.RootElement.GetProperty("code").ToString() == "173")
                     return;
-                else
-                    throw;
+                
+                // rethrow
+                throw;
             }
         }
 
@@ -65,8 +66,9 @@ namespace Sdk.Examples.Tutorials.MarketData
                 //Return if the source does not exist
                 if (errorObj.RootElement.GetProperty("code").ToString() == "391")
                     return;
-                else
-                    throw;
+                
+                // rethrow
+                throw;
             }
         }
 
@@ -395,7 +397,7 @@ namespace Sdk.Examples.Tutorials.MarketData
                         InputTransition = new CorporateActionTransitionComponentRequest (identifierMappingInput,1,1),
                         OutputTransitions = new List<CorporateActionTransitionComponentRequest>()
                         {
-                            new CorporateActionTransitionComponentRequest(identifierMappingOutputOriginal,0,0),
+                            new CorporateActionTransitionComponentRequest(identifierMappingOutputOriginal), // uses default values for unitsFactor and costFactor
                             new CorporateActionTransitionComponentRequest(identifierMappingOutputNew,1,1)
                         }
                     }

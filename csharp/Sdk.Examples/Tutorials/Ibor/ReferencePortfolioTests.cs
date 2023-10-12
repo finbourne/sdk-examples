@@ -16,7 +16,7 @@ namespace Sdk.Examples.Tutorials.Ibor
 
         //  This defines the scope that entities will be created in the test
         const string TutorialScope = "Testdemo1";
-        private readonly DateTimeOffset createDate = new DateTimeOffset(2000, 1, 1, 0, 0, 0, TimeSpan.Zero);
+        private readonly DateTimeOffset _createDate = new DateTimeOffset(2000, 1, 1, 0, 0, 0, TimeSpan.Zero);
 
         [OneTimeSetUp]
         public void SetUp()
@@ -46,7 +46,7 @@ namespace Sdk.Examples.Tutorials.Ibor
                 displayName: F39PortfolioName,
 
                 //  Create date for the below. We can only upsert constituents after this date.
-                created: createDate
+                created: _createDate
 
             );
 
@@ -78,7 +78,7 @@ namespace Sdk.Examples.Tutorials.Ibor
                 displayName: F40PortfolioName,
 
                 //  Create date for the below. We can only upsert constituents after this date.
-                created: createDate
+                created: _createDate
 
             );
 

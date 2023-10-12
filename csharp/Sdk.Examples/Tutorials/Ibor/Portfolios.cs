@@ -19,8 +19,8 @@ namespace Sdk.Examples.Tutorials.Ibor
         private InstrumentLoader _instrumentLoader;
         //    This defines the scope that entities will be created in
 
-        internal string _portfolioCode;
-        internal string _portfolioScope;
+        private string _portfolioCode;
+        private string _portfolioScope;
 
         [SetUp]
         public void SetUp()

@@ -790,7 +790,7 @@ namespace Sdk.Examples.Tutorials.Ibor
                 }
                 else
                 {
-                    throw apiEx;
+                    throw;
                 }
             }
         }
@@ -949,6 +949,7 @@ namespace Sdk.Examples.Tutorials.Ibor
             //    Upload recipe to Lusid 
             var upsertRecipeRequest = new UpsertRecipeRequest(recipe);
             var response = RecipeApi.UpsertConfigurationRecipe(upsertRecipeRequest);
+            // check the response for success.
 
             return (recipeScope, recipeCode);
         }

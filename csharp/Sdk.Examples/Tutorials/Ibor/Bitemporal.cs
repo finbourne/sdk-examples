@@ -73,6 +73,8 @@ namespace Sdk.Examples.Tutorials.Ibor
             Assert.That(transactions.Values.Count, Is.EqualTo(5), $"AsAt: {asAtBatch3:o}");
 
             transactions = ApiFactory.Api<ITransactionPortfoliosApi>().GetTransactions(TestDataUtilities.TutorialScope, portfolioRequest.Code);
+
+            Assert.That(transactions.Values.Count, Is.EqualTo(5), $"AsAt: Now....");
         }
     }
 }
