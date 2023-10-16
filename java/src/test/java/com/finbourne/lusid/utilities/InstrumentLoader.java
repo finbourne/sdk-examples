@@ -21,27 +21,52 @@ import static com.finbourne.lusid.utilities.TestDataUtilities.DefaultScope;
  */
 public class InstrumentLoader {
 
-    private InstrumentsApi  instrumentsApi;
+    private InstrumentsApi instrumentsApi;
 
     public InstrumentLoader(InstrumentsApi instrumentsApi) {
         this.instrumentsApi = instrumentsApi;
     }
 
     /**
-     *  Loads a set of instruments into LUSID
+     * Loads a set of instruments into LUSID
      *
      * @return List of LUSID instrument ids
      */
     public List<String> loadInstruments() throws ApiException {
 
         UpsertInstrumentsResponse instrumentsResponse = instrumentsApi.upsertInstruments(Stream.of(new Object[][] {
-                { "request1", new InstrumentDefinition().name("Anglo American plc").identifiers(new HashMap<String, InstrumentIdValue>() {{ put("Figi", new InstrumentIdValue().value("BBG000BBLDF4")); }}) },
-                { "request2", new InstrumentDefinition().name("Avast").identifiers(new HashMap<String, InstrumentIdValue>() {{ put("Figi", new InstrumentIdValue().value("BBG00KW3SK62")); }}) },
-                { "request3", new InstrumentDefinition().name("Berkeley Group Holdings").identifiers(new HashMap<String, InstrumentIdValue>() {{ put("Figi", new InstrumentIdValue().value("BBG000H6ZKT3")); }}) },
-                { "request4", new InstrumentDefinition().name("Croda International").identifiers(new HashMap<String, InstrumentIdValue>() {{ put("Figi", new InstrumentIdValue().value("BBG000BDCLS8")); }}) },
-                { "request5", new InstrumentDefinition().name("Experian").identifiers(new HashMap<String, InstrumentIdValue>() {{ put("Figi", new InstrumentIdValue().value("BBG000BKFZN3")); }}) }
-            }).collect(Collectors.toMap(data -> (String)data[0], data -> (InstrumentDefinition)data[1])),
-            DefaultScope);
+                { "request1", new InstrumentDefinition().name("Anglo American plc")
+                        .identifiers(new HashMap<String, InstrumentIdValue>() {
+                            {
+                                put("Figi", new InstrumentIdValue().value("BBG000BBLDF4"));
+                            }
+                        }) },
+                { "request2",
+                        new InstrumentDefinition().name("Avast").identifiers(new HashMap<String, InstrumentIdValue>() {
+                            {
+                                put("Figi", new InstrumentIdValue().value("BBG00KW3SK62"));
+                            }
+                        }) },
+                { "request3", new InstrumentDefinition().name("Berkeley Group Holdings")
+                        .identifiers(new HashMap<String, InstrumentIdValue>() {
+                            {
+                                put("Figi", new InstrumentIdValue().value("BBG000H6ZKT3"));
+                            }
+                        }) },
+                { "request4", new InstrumentDefinition().name("Croda International")
+                        .identifiers(new HashMap<String, InstrumentIdValue>() {
+                            {
+                                put("Figi", new InstrumentIdValue().value("BBG000BDCLS8"));
+                            }
+                        }) },
+                { "request5", new InstrumentDefinition().name("Experian")
+                        .identifiers(new HashMap<String, InstrumentIdValue>() {
+                            {
+                                put("Figi", new InstrumentIdValue().value("BBG000BKFZN3"));
+                            }
+                        }) }
+        }).collect(Collectors.toMap(data -> (String) data[0], data -> (InstrumentDefinition) data[1])))
+                .scope(DefaultScope).execute();
 
         return instrumentsResponse
                 .getValues()

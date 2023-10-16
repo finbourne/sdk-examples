@@ -5,6 +5,7 @@ import com.finbourne.lusid.ApiException;
 import com.finbourne.lusid.api.InstrumentsApi;
 import com.finbourne.lusid.api.PropertyDefinitionsApi;
 import com.finbourne.lusid.model.*;
+import com.finbourne.lusid.extensions.*;
 import com.finbourne.lusid.utilities.*;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -30,13 +31,13 @@ public class Instruments {
     private static final String FIGI_PROPERTY_KEY = "Instrument/default/Figi";
 
     private static InstrumentsApi instrumentsApi;
-    private static PropertyDefinitionsApi  propertyDefinitionsApi;
+    private static PropertyDefinitionsApi propertyDefinitionsApi;
 
     @BeforeClass
     public static void setUp() throws Exception {
 
         ApiConfiguration apiConfiguration = new ApiConfigurationBuilder().build(CredentialsSource.credentialsFile);
-        ApiClient apiClient = new ApiClientBuilder().build(apiConfiguration, 30, 30);
+        ApiClient apiClient = new ApiClientBuilder().build(apiConfiguration);
 
         instrumentsApi = new InstrumentsApi(apiClient);
         propertyDefinitionsApi = new PropertyDefinitionsApi(apiClient);
@@ -47,11 +48,11 @@ public class Instruments {
 
     private static void ensurePropertyDefinition(String code) throws ApiException {
         try {
-            propertyDefinitionsApi.getPropertyDefinition("Instrument", TestDataUtilities.TutorialScope, code, null, null);
+            propertyDefinitionsApi.getPropertyDefinition("Instrument", TestDataUtilities.TutorialScope, code).execute();
         } catch (ApiException e) {
 
-            //  Property definition doesn't exist (returns 404), so create one
-            //  Details of the property to be created
+            // Property definition doesn't exist (returns 404), so create one
+            // Details of the property to be created
             CreatePropertyDefinitionRequest propertyDefinition = new CreatePropertyDefinitionRequest()
                     .domain(CreatePropertyDefinitionRequest.DomainEnum.INSTRUMENT)
                     .scope(TutorialScope)
@@ -61,95 +62,89 @@ public class Instruments {
                     .displayName("Fund Style")
                     .dataTypeId(new ResourceId().scope("system").code("string"));
 
-            //  Create property definition
+            // Create property definition
             propertyDefinitionsApi.createPropertyDefinition(propertyDefinition);
         }
     }
-    
-    private static void seedInstrumentMaster() throws ApiException
-    {
-        UpsertInstrumentsResponse upsertInstrumentsResponse = instrumentsApi.upsertInstruments(Stream.of(new Object[][] {
 
-                {"correlationId1", new InstrumentDefinition()
-                        .name("Anglo American plc")
+    private static void seedInstrumentMaster() throws ApiException {
+        UpsertInstrumentsResponse upsertInstrumentsResponse = instrumentsApi
+                .upsertInstruments(Stream.of(new Object[][] {
 
-                        /*
-                            Instruments are created with a set of identifiers
-                            each under a different scheme
-                         */
-                        .identifiers(new HashMap<String, InstrumentIdValue>() {
-                            {
-                                put(FIGI_SCHEME, new InstrumentIdValue().value("BBG000BBLDF4"));
-                                put(CUSTOM_INTERNAL_SCHEME, new InstrumentIdValue().value("SDK_ID_1"));
-                                put(ISIN_SCHEME, new InstrumentIdValue().value("GB00B1XZS820"));
-                                put(SEDOL_SCHEME, new InstrumentIdValue().value("B1XZS82"));
-                            }
-                        })},
+                        { "correlationId1", new InstrumentDefinition()
+                                .name("Anglo American plc")
 
+                                /*
+                                 * Instruments are created with a set of identifiers
+                                 * each under a different scheme
+                                 */
+                                .identifiers(new HashMap<String, InstrumentIdValue>() {
+                                    {
+                                        put(FIGI_SCHEME, new InstrumentIdValue().value("BBG000BBLDF4"));
+                                        put(CUSTOM_INTERNAL_SCHEME, new InstrumentIdValue().value("SDK_ID_1"));
+                                        put(ISIN_SCHEME, new InstrumentIdValue().value("GB00B1XZS820"));
+                                        put(SEDOL_SCHEME, new InstrumentIdValue().value("B1XZS82"));
+                                    }
+                                }) },
 
-                {"correlationId2", new InstrumentDefinition()
-                        .name("Avast")
-                        .identifiers(new HashMap<String, InstrumentIdValue>() {
-                            {
-                                put(FIGI_SCHEME, new InstrumentIdValue().value("BBG00KW3SK62"));
-                                put(CUSTOM_INTERNAL_SCHEME, new InstrumentIdValue().value("SDK_ID_2"));
-                                put(ISIN_SCHEME, new InstrumentIdValue().value("GB00BDD85M81"));
-                                put(SEDOL_SCHEME, new InstrumentIdValue().value("BDD85M8"));
-                            }
-                        })},
+                        { "correlationId2", new InstrumentDefinition()
+                                .name("Avast")
+                                .identifiers(new HashMap<String, InstrumentIdValue>() {
+                                    {
+                                        put(FIGI_SCHEME, new InstrumentIdValue().value("BBG00KW3SK62"));
+                                        put(CUSTOM_INTERNAL_SCHEME, new InstrumentIdValue().value("SDK_ID_2"));
+                                        put(ISIN_SCHEME, new InstrumentIdValue().value("GB00BDD85M81"));
+                                        put(SEDOL_SCHEME, new InstrumentIdValue().value("BDD85M8"));
+                                    }
+                                }) },
 
+                        { "correlationId3", new InstrumentDefinition()
+                                .name("Berkeley Group Holdings")
+                                .identifiers(new HashMap<String, InstrumentIdValue>() {
+                                    {
+                                        put(FIGI_SCHEME, new InstrumentIdValue().value("BBG000H6ZKT3"));
+                                        put(CUSTOM_INTERNAL_SCHEME, new InstrumentIdValue().value("SDK_ID_3"));
+                                        put(ISIN_SCHEME, new InstrumentIdValue().value("GB00B02L3W35"));
+                                        put(SEDOL_SCHEME, new InstrumentIdValue().value("B02L3W3"));
+                                    }
+                                }) },
 
-                {"correlationId3", new InstrumentDefinition()
-                        .name("Berkeley Group Holdings")
-                        .identifiers(new HashMap<String, InstrumentIdValue>() {
-                            {
-                                put(FIGI_SCHEME, new InstrumentIdValue().value("BBG000H6ZKT3"));
-                                put(CUSTOM_INTERNAL_SCHEME, new InstrumentIdValue().value("SDK_ID_3"));
-                                put(ISIN_SCHEME, new InstrumentIdValue().value("GB00B02L3W35"));
-                                put(SEDOL_SCHEME, new InstrumentIdValue().value("B02L3W3"));
-                            }
-                        })},
+                        { "correlationId4", new InstrumentDefinition()
+                                .name("Croda International")
+                                .identifiers(new HashMap<String, InstrumentIdValue>() {
+                                    {
+                                        put(FIGI_SCHEME, new InstrumentIdValue().value("BBG000BDCLS8"));
+                                        put(CUSTOM_INTERNAL_SCHEME, new InstrumentIdValue().value("SDK_ID_4"));
+                                        put(ISIN_SCHEME, new InstrumentIdValue().value("GB00BJFFLV09"));
+                                        put(SEDOL_SCHEME, new InstrumentIdValue().value("BJFFLV0"));
+                                    }
+                                }) },
 
+                        { "correlationId5", new InstrumentDefinition()
+                                .name("Experian")
+                                .identifiers(new HashMap<String, InstrumentIdValue>() {
+                                    {
+                                        put(FIGI_SCHEME, new InstrumentIdValue().value("BBG000BKFZN3"));
+                                        put(CUSTOM_INTERNAL_SCHEME, new InstrumentIdValue().value("SDK_ID_5"));
+                                        put(ISIN_SCHEME, new InstrumentIdValue().value("GB00B19NLV48"));
+                                        put(SEDOL_SCHEME, new InstrumentIdValue().value("B19NLV4"));
+                                    }
+                                }) }
 
-                {"correlationId4", new InstrumentDefinition()
-                        .name("Croda International")
-                        .identifiers(new HashMap<String, InstrumentIdValue>() {
-                            {
-                                put(FIGI_SCHEME, new InstrumentIdValue().value("BBG000BDCLS8"));
-                                put(CUSTOM_INTERNAL_SCHEME, new InstrumentIdValue().value("SDK_ID_4"));
-                                put(ISIN_SCHEME, new InstrumentIdValue().value("GB00BJFFLV09"));
-                                put(SEDOL_SCHEME, new InstrumentIdValue().value("BJFFLV0"));
-                            }
-                        })},
-
-                {"correlationId5", new InstrumentDefinition()
-                        .name("Experian")
-                        .identifiers(new HashMap<String, InstrumentIdValue>() {
-                            {
-                                put(FIGI_SCHEME, new InstrumentIdValue().value("BBG000BKFZN3"));
-                                put(CUSTOM_INTERNAL_SCHEME, new InstrumentIdValue().value("SDK_ID_5"));
-                                put(ISIN_SCHEME, new InstrumentIdValue().value("GB00B19NLV48"));
-                                put(SEDOL_SCHEME, new InstrumentIdValue().value("B19NLV4"));
-                            }
-                        })}
-
-            }).collect(Collectors.toMap(data -> (String)data[0], data -> (InstrumentDefinition)data[1])),
-            DefaultScope);
+                }).collect(Collectors.toMap(data -> (String) data[0], data -> (InstrumentDefinition) data[1]))).scope(DefaultScope).execute();
 
         assertThat(upsertInstrumentsResponse.getValues().size(), is(equalTo(5)));
     }
 
-
     @Test
-    public void lookup_instrument_by_unique_id() throws ApiException
-    {
+    public void lookup_instrument_by_unique_id() throws ApiException {
         /*
-            Look up an instrument that already exists in the instrument master by a
-            unique id, in this case an OpenFigi, and also return a list of aliases
+         * Look up an instrument that already exists in the instrument master by a
+         * unique id, in this case an OpenFigi, and also return a list of aliases
          */
 
-        GetInstrumentsResponse lookedUpInstruments = instrumentsApi.getInstruments(FIGI_SCHEME, Arrays.asList("BBG000BBLDF4"),
-                null, null, Arrays.asList(ISIN_PROPERTY_KEY, SEDOL_PROPERTY_KEY), DefaultScope, null);
+        GetInstrumentsResponse lookedUpInstruments = instrumentsApi.getInstruments(FIGI_SCHEME,
+                Arrays.asList("BBG000BBLDF4")).propertyKeys(Arrays.asList(ISIN_PROPERTY_KEY, SEDOL_PROPERTY_KEY)).scope(DefaultScope).execute();
 
         assertThat(lookedUpInstruments.getValues(), hasKey("BBG000BBLDF4"));
 
@@ -157,7 +152,7 @@ public class Instruments {
 
         assertThat(instrument.getName(), is(equalTo("Anglo American plc")));
 
-        List<Property>  identifiers = instrument.getProperties();
+        List<Property> identifiers = instrument.getProperties();
         identifiers.sort(Comparator.comparing(Property::getKey));
 
         assertThat(identifiers.get(0).getKey(), equalTo(ISIN_PROPERTY_KEY));
@@ -169,25 +164,25 @@ public class Instruments {
     @Test
     public void list_available_identifiers() throws ApiException {
 
-        //    Get the list of identifier schemes
-        ResourceListOfInstrumentIdTypeDescriptor identifiers = instrumentsApi.getInstrumentIdentifierTypes();
+        // Get the list of identifier schemes
+        ResourceListOfInstrumentIdTypeDescriptor identifiers = instrumentsApi.getInstrumentIdentifierTypes().execute();
 
-        //    Schemes are returned as descriptors containing the name, property key and uniqueness constraint
+        // Schemes are returned as descriptors containing the name, property key and
+        // uniqueness constraint
 
-        for (InstrumentIdTypeDescriptor scheme : identifiers.getValues())
-        {
+        for (InstrumentIdTypeDescriptor scheme : identifiers.getValues()) {
             System.out.println(String.format("name: %s\nproperty key: %s\nis unique: %s\n", scheme.getIdentifierType(),
                     scheme.getPropertyKey(), scheme.getIsUniqueIdentifierType()));
         }
     }
 
     @Test
-    public void list_all_instruments() throws  ApiException {
+    public void list_all_instruments() throws ApiException {
 
         final int pageSize = 5;
 
-        //    List the instruments restricting, the number that are returned
-        PagedResourceListOfInstrument instruments = instrumentsApi.listInstruments(null, null, null, null, null, pageSize, null, null, DefaultScope, null);
+        // List the instruments restricting, the number that are returned
+        PagedResourceListOfInstrument instruments = instrumentsApi.listInstruments().limit(pageSize).scope(DefaultScope).execute();
 
         assertThat(instruments.getValues().size(), is(equalTo(pageSize)));
     }
@@ -195,10 +190,10 @@ public class Instruments {
     @Test
     public void list_instruments_by_Identifier_type() throws ApiException {
 
-        List<String>    figis = Arrays.asList("BBG000BBLDF4", "BBG00KW3SK62", "BBG000H6ZKT3");
+        List<String> figis = Arrays.asList("BBG000BBLDF4", "BBG00KW3SK62", "BBG000H6ZKT3");
 
-        //  Get a set of instruments querying by FIGIs
-        GetInstrumentsResponse instruments = instrumentsApi.getInstruments("Figi", figis, null, null, null, DefaultScope, null);
+        // Get a set of instruments querying by FIGIs
+        GetInstrumentsResponse instruments = instrumentsApi.getInstruments("Figi", figis).scope(DefaultScope).execute();
 
         for (String figi : figis) {
             assertThat(instruments.getValues(), hasKey(figi));
@@ -208,25 +203,21 @@ public class Instruments {
     @Test
     public void edit_instrument_property() throws ApiException {
         String figi = "BBG000BBLDF4";
-        //  Create the property value
-        PropertyValue   propertyValue = new PropertyValue().labelValue("Telecoms");
+        // Create the property value
+        PropertyValue propertyValue = new PropertyValue().labelValue("Telecoms");
         String propertyKey = String.format("Instrument/%s/CustomSector", TutorialScope);
 
-        //    Add it to the instrument
+        // Add it to the instrument
         instrumentsApi.upsertInstrumentsProperties(Collections.singletonList(new UpsertInstrumentPropertyRequest()
                 .identifierType(FIGI_SCHEME)
                 .identifier(figi)
-                .properties(Collections.singletonList(new Property().key(propertyKey).value(propertyValue)))),
-                DefaultScope);
+                .properties(Collections.singletonList(new Property().key(propertyKey).value(propertyValue))))).scope(DefaultScope).execute();
 
         Instrument instrument = instrumentsApi.getInstrument(
                 FIGI_SCHEME,
-                figi,
-                null, null,
-                Collections.singletonList(propertyKey),
-                DefaultScope,
-                null
-        );
+                figi
+                ).scope(DefaultScope).propertyKeys(                
+                Collections.singletonList(propertyKey)).execute();
 
         assertThat(instrument.getProperties(), hasSize(greaterThanOrEqualTo(1)));
 

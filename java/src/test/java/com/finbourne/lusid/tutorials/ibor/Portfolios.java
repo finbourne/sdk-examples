@@ -4,6 +4,7 @@ import com.finbourne.lusid.ApiClient;
 import com.finbourne.lusid.ApiException;
 import com.finbourne.lusid.api.*;
 import com.finbourne.lusid.model.*;
+import com.finbourne.lusid.extensions.*;
 import com.finbourne.lusid.utilities.*;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -25,15 +26,16 @@ public class Portfolios {
 
     private static List<String> instrumentIds;
 
-    private static TransactionPortfoliosApi    transactionPortfoliosApi;
-    private static PropertyDefinitionsApi   propertyDefinitionsApi;
-    private static ScopesApi    scopesApi;
-    private static PortfoliosApi    portfoliosApi;
+    private static TransactionPortfoliosApi transactionPortfoliosApi;
+    private static PropertyDefinitionsApi propertyDefinitionsApi;
+    private static ScopesApi scopesApi;
+    private static PortfoliosApi portfoliosApi;
     private static TestDataUtilities testDataUtilities;
 
     @BeforeClass
     public static void setUp() throws Exception {
-        ApiConfiguration apiConfiguration = new ApiConfigurationBuilder().build(CredentialsSource.credentialsFile);
+        ApiConfiguration apiConfiguration = new ApiConfigurationBuilder()
+                        .build(CredentialsSource.credentialsFile);
         ApiClient apiClient = new ApiClientBuilder().build(apiConfiguration);
 
         transactionPortfoliosApi = new TransactionPortfoliosApi(apiClient);
@@ -53,21 +55,24 @@ public class Portfolios {
 
         String uuid = UUID.randomUUID().toString();
 
-        //    Details of the new portfolio to be created, created here with the minimum set of mandatory fields
+        // Details of the new portfolio to be created, created here with the minimum set
+        // of mandatory fields
         CreateTransactionPortfolioRequest request = new CreateTransactionPortfolioRequest()
 
-                //    Unique portfolio code, portfolio codes must be unique across scopes
-                .code(String.format("Id-%s", uuid))
+                        // Unique portfolio code, portfolio codes must be unique across scopes
+                        .code(String.format("Id-%s", uuid))
 
-                //    Descriptive name for the portfolio
-                .displayName(String.format("Portfolio-%s", uuid))
-                .baseCurrency("GBP");
+                        // Descriptive name for the portfolio
+                        .displayName(String.format("Portfolio-%s", uuid))
+                        .baseCurrency("GBP");
 
-        //    Create the portfolio in LUSID in the specified scope
-        Portfolio portfolio = transactionPortfoliosApi.createPortfolio(TutorialScope, request);
+        // Create the portfolio in LUSID in the specified scope
+        Portfolio portfolio = transactionPortfoliosApi.createPortfolio(TutorialScope, request).execute();
 
-        //    Confirm that the portfolio was successfully created.  Any failures will result in
-        //    a ApiException being thrown which contain the relevant response code and error message
+        // Confirm that the portfolio was successfully created. Any failures will result
+        // in
+        // a ApiException being thrown which contain the relevant response code and
+        // error message
         assertEquals(request.getCode(), portfolio.getId().getCode());
     }
 
@@ -78,182 +83,204 @@ public class Portfolios {
         String propertyName = String.format("fund-style-%s", uuid);
         OffsetDateTime effectiveDate = OffsetDateTime.of(2018, 1, 1, 0, 0, 0, 0, ZoneOffset.UTC);
 
-        //  Details of the property to be created
+        // Details of the property to be created
         CreatePropertyDefinitionRequest propertyDefinition = new CreatePropertyDefinitionRequest()
 
-                //  The domain the property is to be applied to
-                .domain(CreatePropertyDefinitionRequest.DomainEnum.PORTFOLIO)
+                        // The domain the property is to be applied to
+                        .domain(CreatePropertyDefinitionRequest.DomainEnum.PORTFOLIO)
 
-                //  The scope the property will be created in
-                .scope(TutorialScope)
+                        // The scope the property will be created in
+                        .scope(TutorialScope)
 
-                //  When the property value is set it will be valid forever and cannot be changed.
-                //  Properties whose values can change over time should be created with LifeTimeEnum.TIMEVARIANT
-                .lifeTime(CreatePropertyDefinitionRequest.LifeTimeEnum.PERPETUAL)
+                        // When the property value is set it will be valid forever and cannot be
+                        // changed.
+                        // Properties whose values can change over time should be created with
+                        // LifeTimeEnum.TIMEVARIANT
+                        .lifeTime(CreatePropertyDefinitionRequest.LifeTimeEnum.PERPETUAL)
 
-                .code(propertyName)
-                .valueRequired(false)
-                .displayName("Fund Style")
-                .dataTypeId(new ResourceId().scope("system").code("string"));
+                        .code(propertyName)
+                        .valueRequired(false)
+                        .displayName("Fund Style")
+                        .dataTypeId(new ResourceId().scope("system").code("string"));
 
-        //  Create property definition
-        PropertyDefinition    propertyDefinitionDto = propertyDefinitionsApi.createPropertyDefinition(propertyDefinition);
+        // Create property definition
+        PropertyDefinition propertyDefinitionDto = propertyDefinitionsApi
+                        .createPropertyDefinition(propertyDefinition).execute();
 
-        //  Create the property value
-        Property    property = new Property()
-                .key(propertyDefinitionDto.getKey())
-                .value(new PropertyValue().labelValue("Active"));
+        // Create the property value
+        Property property = new Property()
+                        .key(propertyDefinitionDto.getKey())
+                        .value(new PropertyValue().labelValue("Active"));
 
-        //  Details of the portfolio to be created
-        CreateTransactionPortfolioRequest  request = new CreateTransactionPortfolioRequest()
-                .displayName(String.format("Portfolio-%s", uuid))
-                .code(String.format("Id-%s", uuid))
-                .baseCurrency("GBP")
-                .created(effectiveDate)
+        // Details of the portfolio to be created
+        CreateTransactionPortfolioRequest request = new CreateTransactionPortfolioRequest()
+                        .displayName(String.format("Portfolio-%s", uuid))
+                        .code(String.format("Id-%s", uuid))
+                        .baseCurrency("GBP")
+                        .created(effectiveDate)
 
-                //  Set the property value when creating the portfolio
-                .properties(new HashMap<String, Property>() {
-                    { put(propertyDefinitionDto.getKey(), property); }
-                });
+                        // Set the property value when creating the portfolio
+                        .properties(new HashMap<String, Property>() {
+                                {
+                                        put(propertyDefinitionDto.getKey(), property);
+                                }
+                        });
 
-        //  create portfolio
-        Portfolio  portfolio = transactionPortfoliosApi.createPortfolio(TutorialScope, request);
+        // create portfolio
+        Portfolio portfolio = transactionPortfoliosApi.createPortfolio(TutorialScope, request).execute();
 
         assertEquals(request.getCode(), portfolio.getId().getCode());
 
-        PortfolioProperties portfolioProperties = portfoliosApi.getPortfolioProperties(TutorialScope, portfolio.getId().getCode(), null, null);
+        PortfolioProperties portfolioProperties = portfoliosApi.getPortfolioProperties(TutorialScope,
+                        portfolio.getId().getCode()).execute();
 
         assertEquals(1, portfolioProperties.getProperties().size());
-        assertEquals(property.getValue(), portfolioProperties.getProperties().get(propertyDefinitionDto.getKey()).getValue());
+        assertEquals(property.getValue(),
+                        portfolioProperties.getProperties().get(propertyDefinitionDto.getKey()).getValue());
     }
 
     @Test
-    public void add_transactions_to_portfolio() throws ApiException{
+    public void add_transactions_to_portfolio() throws ApiException {
 
-        //    Effective date of the portfolio, this is the date the portfolio was created and became live.  All dates/times
-        //    must be supplied in UTC
+        // Effective date of the portfolio, this is the date the portfolio was created
+        // and became live. All dates/times
+        // must be supplied in UTC
         OffsetDateTime effectiveDate = OffsetDateTime.of(2018, 1, 1, 0, 0, 0, 0, ZoneOffset.UTC);
 
         String portfolioId = testDataUtilities.createTransactionPortfolio(TutorialScope);
 
-        //    Details of the transaction to be added
+        // Details of the transaction to be added
         TransactionRequest transaction = new TransactionRequest()
 
-                //    Unique transaction id
-                .transactionId(UUID.randomUUID().toString())
+                        // Unique transaction id
+                        .transactionId(UUID.randomUUID().toString())
 
-                //    Transaction type, configured during system setup
-                .type("Buy")
+                        // Transaction type, configured during system setup
+                        .type("Buy")
 
-                //    Instrument identifier for the transaction
-                .instrumentIdentifiers(
-                        new HashMap<String, String>() {
-                            { put(LUSID_INSTRUMENT_IDENTIFIER, instrumentIds.get(0)); }
-                        }
-                )
-                .totalConsideration(new CurrencyAndAmount().currency("GBP").amount(new BigDecimal(1230.0)))
-                .transactionDate(effectiveDate.toString())
-                .settlementDate(effectiveDate.toString())
-                .units(new BigDecimal(100.0))
-                .transactionPrice(new TransactionPrice().price(new BigDecimal(12.3)))
-                .source("Broker");
+                        // Instrument identifier for the transaction
+                        .instrumentIdentifiers(
+                                        new HashMap<String, String>() {
+                                                {
+                                                        put(LUSID_INSTRUMENT_IDENTIFIER, instrumentIds.get(0));
+                                                }
+                                        })
+                        .totalConsideration(
+                                        new CurrencyAndAmount().currency("GBP").amount(new BigDecimal(1230.0)))
+                        .transactionDate(effectiveDate.toString())
+                        .settlementDate(effectiveDate.toString())
+                        .units(new BigDecimal(100.0))
+                        .transactionPrice(new TransactionPrice().price(new BigDecimal(12.3)))
+                        .source("Broker");
 
-        //    Add the transaction to the portfolio
-        transactionPortfoliosApi.upsertTransactions(TutorialScope, portfolioId, new ArrayList<>(Arrays.asList(transaction)));
+        // Add the transaction to the portfolio
+        transactionPortfoliosApi.upsertTransactions(TutorialScope, portfolioId,
+                        new ArrayList<>(Arrays.asList(transaction))).execute();
 
-        //    Retrieve the transaction
-        VersionedResourceListOfTransaction transactions = transactionPortfoliosApi.getTransactions(TutorialScope,
-                portfolioId, null, null, null, null, null, null, null, null, null);
+        // Retrieve the transaction
+        VersionedResourceListOfTransaction transactions = transactionPortfoliosApi.getTransactions(
+                        TutorialScope,
+                        portfolioId).execute();
 
         assertEquals(1, transactions.getValues().size());
         assertEquals(transaction.getTransactionId(), transactions.getValues().get(0).getTransactionId());
     }
 
     @Test
-    public void add_transactions_to_portfolio_with_property() throws ApiException{
+    public void add_transactions_to_portfolio_with_property() throws ApiException {
 
         String uuid = UUID.randomUUID().toString();
         String propertyName = String.format("traderId-%s", uuid);
         String propertyValueAsString = "A Trader";
         OffsetDateTime effectiveDate = OffsetDateTime.of(2018, 1, 1, 0, 0, 0, 0, ZoneOffset.UTC);
 
-        //  Details of the property to be created
-        CreatePropertyDefinitionRequest    propertyDefinition = new CreatePropertyDefinitionRequest()
+        // Details of the property to be created
+        CreatePropertyDefinitionRequest propertyDefinition = new CreatePropertyDefinitionRequest()
 
-                //  The domain the property is to be applied to
-                .domain(CreatePropertyDefinitionRequest.DomainEnum.TRANSACTION)
+                        // The domain the property is to be applied to
+                        .domain(CreatePropertyDefinitionRequest.DomainEnum.TRANSACTION)
 
-                //  The scope the property will be created in
-                .scope(TutorialScope)
+                        // The scope the property will be created in
+                        .scope(TutorialScope)
 
-                //  When the property value is set it will be valid forever and cannot be changed.
-                //  Properties whose values can change over time should be created with LifeTimeEnum.TIMEVARIANT
-                .lifeTime(CreatePropertyDefinitionRequest.LifeTimeEnum.PERPETUAL)
+                        // When the property value is set it will be valid forever and cannot be
+                        // changed.
+                        // Properties whose values can change over time should be created with
+                        // LifeTimeEnum.TIMEVARIANT
+                        .lifeTime(CreatePropertyDefinitionRequest.LifeTimeEnum.PERPETUAL)
 
-                .code(propertyName)
-                .valueRequired(false)
-                .displayName("Trader Id")
-                .dataTypeId(new ResourceId().scope("system").code("string"));
+                        .code(propertyName)
+                        .valueRequired(false)
+                        .displayName("Trader Id")
+                        .dataTypeId(new ResourceId().scope("system").code("string"));
 
-        //  Create the property definition
-        PropertyDefinition propertyDefinitionDto = propertyDefinitionsApi.createPropertyDefinition(propertyDefinition);
+        // Create the property definition
+        PropertyDefinition propertyDefinitionDto = propertyDefinitionsApi
+                        .createPropertyDefinition(propertyDefinition).execute();
 
         String portfolioId = testDataUtilities.createTransactionPortfolio(TutorialScope);
 
-        //  Create the property value
+        // Create the property value
         PropertyValue propertyValue = new PropertyValue().labelValue(propertyValueAsString);
-        PerpetualProperty property = new PerpetualProperty().key(propertyDefinitionDto.getKey()).value(propertyValue);
+        PerpetualProperty property = new PerpetualProperty().key(propertyDefinitionDto.getKey())
+                        .value(propertyValue);
 
         Map<String, PerpetualProperty> properties = new HashMap<>();
         properties.put(propertyDefinitionDto.getKey(), property);
 
-        //  Details of the transaction to be added
+        // Details of the transaction to be added
         TransactionRequest transaction = new TransactionRequest()
 
-                //    Unique transaction id
-                .transactionId(UUID.randomUUID().toString())
+                        // Unique transaction id
+                        .transactionId(UUID.randomUUID().toString())
 
-                //    Transaction type, configured during system setup
-                .type("Buy")
+                        // Transaction type, configured during system setup
+                        .type("Buy")
 
-                //    Instrument identifier for the transaction
-                .instrumentIdentifiers(
-                        new HashMap<String, String>() {
-                            { put(LUSID_INSTRUMENT_IDENTIFIER, instrumentIds.get(0)); }
-                        }
-                 )
-                .totalConsideration(new CurrencyAndAmount().currency("GBP").amount(new BigDecimal(1230.0)))
-                .transactionDate(effectiveDate.toString())
-                .settlementDate(effectiveDate.toString())
-                .units(new BigDecimal(100.0))
-                .transactionPrice(new TransactionPrice().price(new BigDecimal(12.3)))
-                .source("Custodian")
-                .properties(properties);
+                        // Instrument identifier for the transaction
+                        .instrumentIdentifiers(
+                                        new HashMap<String, String>() {
+                                                {
+                                                        put(LUSID_INSTRUMENT_IDENTIFIER, instrumentIds.get(0));
+                                                }
+                                        })
+                        .totalConsideration(
+                                        new CurrencyAndAmount().currency("GBP").amount(new BigDecimal(1230.0)))
+                        .transactionDate(effectiveDate.toString())
+                        .settlementDate(effectiveDate.toString())
+                        .units(new BigDecimal(100.0))
+                        .transactionPrice(new TransactionPrice().price(new BigDecimal(12.3)))
+                        .source("Custodian")
+                        .properties(properties);
 
-        //  Add the transaction
-        transactionPortfoliosApi.upsertTransactions(TutorialScope, portfolioId, new ArrayList<>(Arrays.asList(transaction)));
+        // Add the transaction
+        transactionPortfoliosApi.upsertTransactions(TutorialScope, portfolioId,
+                        new ArrayList<>(Arrays.asList(transaction))).execute();
 
-        //  get the trade
-        VersionedResourceListOfTransaction transactions = transactionPortfoliosApi.getTransactions(TutorialScope,
-                portfolioId, null, null, null, null, null, null, null, null, null);
+        // get the trade
+        VersionedResourceListOfTransaction transactions = transactionPortfoliosApi.getTransactions(
+                        TutorialScope,
+                        portfolioId).execute();
 
         assertEquals(1, transactions.getValues().size());
         assertEquals(transaction.getTransactionId(), transactions.getValues().get(0).getTransactionId());
-        assertEquals(propertyValue, transactions.getValues().get(0).getProperties().get(propertyDefinitionDto.getKey()).getValue());
+        assertEquals(propertyValue,
+                        transactions.getValues().get(0).getProperties().get(propertyDefinitionDto.getKey())
+                                        .getValue());
     }
 
     @Test
     public void list_portfolios() throws ApiException {
 
-        //    This defines the scope that the portfolios will be retrieved from
+        // This defines the scope that the portfolios will be retrieved from
         String scope = TutorialScope + "-" + UUID.randomUUID().toString();
 
         for (int i = 0; i < 10; i++) {
-            testDataUtilities.createTransactionPortfolio(scope);
+                testDataUtilities.createTransactionPortfolio(scope);
         }
 
-        //    Retrieve the list of portfolios from a given scope
-        ResourceListOfPortfolio portfolios = portfoliosApi.listPortfoliosForScope(scope, null, null, null, null, null, null, null, null, null);
+        // Retrieve the list of portfolios from a given scope
+        ResourceListOfPortfolio portfolios = portfoliosApi.listPortfoliosForScope(scope).execute();
 
         assertThat(portfolios.getValues().size(), is(equalTo(10)));
     }

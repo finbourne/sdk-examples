@@ -38,7 +38,7 @@ public class TestDataUtilities {
         String uuid = UUID.randomUUID().toString();
         OffsetDateTime effectiveDate = OffsetDateTime.of(2018, 1, 1, 0, 0, 0, 0, ZoneOffset.UTC);
 
-        //  portfolio request
+        // portfolio request
         String originalPortfolioId = String.format("Id-%s", uuid);
         CreateTransactionPortfolioRequest request = new CreateTransactionPortfolioRequest()
                 .displayName(String.format("Portfolio-%s", uuid))
@@ -46,8 +46,8 @@ public class TestDataUtilities {
                 .baseCurrency("GBP")
                 .created(effectiveDate);
 
-        //  create portfolio
-        Portfolio portfolio = this.transactionPortfoliosApi.createPortfolio(scope, request);
+        // create portfolio
+        Portfolio portfolio = this.transactionPortfoliosApi.createPortfolio(scope, request).execute();
 
         assertEquals(portfolio.getId().getCode(), originalPortfolioId);
 
@@ -72,13 +72,15 @@ public class TestDataUtilities {
             BigDecimal price,
             String currency,
             OffsetDateTime tradeDate,
-            String transactionType
-    )
-    {
+            String transactionType) {
         return new TransactionRequest()
                 .transactionId(UUID.randomUUID().toString())
                 .type(transactionType)
-                .instrumentIdentifiers(new HashMap<String, String>() {{ put(LUSID_INSTRUMENT_IDENTIFIER, instrumentId); }})
+                .instrumentIdentifiers(new HashMap<String, String>() {
+                    {
+                        put(LUSID_INSTRUMENT_IDENTIFIER, instrumentId);
+                    }
+                })
                 .totalConsideration(new CurrencyAndAmount().currency(currency).amount(units.multiply(price)))
                 .transactionDate(tradeDate.toString())
                 .settlementDate(tradeDate.toString())
@@ -86,7 +88,6 @@ public class TestDataUtilities {
                 .transactionPrice(new TransactionPrice().price(price))
                 .source("Custodian");
     }
-
 
     /**
      * Builds a transaction request for cash
@@ -99,18 +100,19 @@ public class TestDataUtilities {
     public TransactionRequest buildCashFundsInTransactionRequest(
             BigDecimal units,
             String currency,
-            OffsetDateTime tradeDate
-    )
-    {
+            OffsetDateTime tradeDate) {
         return new TransactionRequest()
                 .transactionId(UUID.randomUUID().toString())
                 .type("FundsIn")
-                .instrumentIdentifiers(new HashMap<String, String>() {{ put(LUSID_CASH_IDENTIFIER, currency); }})
+                .instrumentIdentifiers(new HashMap<String, String>() {
+                    {
+                        put(LUSID_CASH_IDENTIFIER, currency);
+                    }
+                })
                 .totalConsideration(new CurrencyAndAmount().currency(currency).amount(new BigDecimal(0.0)))
                 .transactionDate(tradeDate.toString())
                 .settlementDate(tradeDate.toString())
                 .units(units)
                 .source("Custodian");
     }
-
 }

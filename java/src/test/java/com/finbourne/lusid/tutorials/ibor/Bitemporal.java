@@ -7,6 +7,7 @@ import com.finbourne.lusid.model.Transaction;
 import com.finbourne.lusid.model.TransactionRequest;
 import com.finbourne.lusid.model.UpsertPortfolioTransactionsResponse;
 import com.finbourne.lusid.model.VersionedResourceListOfTransaction;
+import com.finbourne.lusid.extensions.*;
 import com.finbourne.lusid.utilities.*;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -32,82 +33,102 @@ public class Bitemporal {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        ApiConfiguration apiConfiguration = new ApiConfigurationBuilder().build(CredentialsSource.credentialsFile);
-        ApiClient apiClient = new ApiClientBuilder().build(apiConfiguration);
+            ApiConfiguration apiConfiguration = new ApiConfigurationBuilder()
+                            .build(CredentialsSource.credentialsFile);
+            ApiClient apiClient = new ApiClientBuilder().build(apiConfiguration);
 
-        transactionPortfoliosApi = new TransactionPortfoliosApi(apiClient);
+            transactionPortfoliosApi = new TransactionPortfoliosApi(apiClient);
 
-        testDataUtilities = new TestDataUtilities(transactionPortfoliosApi);
+            testDataUtilities = new TestDataUtilities(transactionPortfoliosApi);
 
-        InstrumentsApi instrumentsApi = new InstrumentsApi(apiClient);
-        InstrumentLoader instrumentLoader = new InstrumentLoader(instrumentsApi);
-        instrumentIds = instrumentLoader.loadInstruments();
+            InstrumentsApi instrumentsApi = new InstrumentsApi(apiClient);
+            InstrumentLoader instrumentLoader = new InstrumentLoader(instrumentsApi);
+            instrumentIds = instrumentLoader.loadInstruments();
     }
 
     @Test
-    public void apply_bitemporal_portfolio_change() throws Exception
-    {
-        String portfolioId = testDataUtilities.createTransactionPortfolio(TutorialScope);
+    public void apply_bitemporal_portfolio_change() throws Exception {
+            String portfolioId = testDataUtilities.createTransactionPortfolio(TutorialScope);
 
-        assertNotNull(portfolioId);
+            assertNotNull(portfolioId);
 
-        Consumer<List<Transaction>> printTransactions = transactions -> transactions.forEach(t ->
-                System.out.println(
-                        String.format("%s\t%s\t%f\t%f\t%f",
-                                t.getInstrumentUid(),
-                                t.getTransactionDate(),
-                                t.getUnits(),
-                                t.getTransactionPrice().getPrice(),
-                                t.getTotalConsideration().getAmount())));
+            Consumer<List<Transaction>> printTransactions = transactions -> transactions
+                            .forEach(t -> System.out.println(
+                                            String.format("%s\t%s\t%f\t%f\t%f",
+                                                            t.getInstrumentUid(),
+                                                            t.getTransactionDate(),
+                                                            t.getUnits(),
+                                                            t.getTransactionPrice().getPrice(),
+                                                            t.getTotalConsideration().getAmount())));
 
-        List<TransactionRequest>    newTransactions = new ArrayList<>();
-        newTransactions.add(testDataUtilities.buildTransactionRequest(instrumentIds.get(0), new BigDecimal(100.0), new BigDecimal(101.0), "GBP", OffsetDateTime.of(2018, 1, 1, 0, 0, 0, 0, ZoneOffset.UTC), "Buy"));
-        newTransactions.add(testDataUtilities.buildTransactionRequest(instrumentIds.get(1), new BigDecimal(100.0), new BigDecimal(102.0), "GBP", OffsetDateTime.of(2018, 1, 2, 0, 0, 0, 0, ZoneOffset.UTC), "Buy"));
-        newTransactions.add(testDataUtilities.buildTransactionRequest(instrumentIds.get(2), new BigDecimal(100.0), new BigDecimal(103.0), "GBP", OffsetDateTime.of(2018, 1, 3, 0, 0, 0, 0, ZoneOffset.UTC), "Buy"));
+            List<TransactionRequest> newTransactions = new ArrayList<>();
+            newTransactions.add(
+                            testDataUtilities.buildTransactionRequest(instrumentIds.get(0), new BigDecimal(100.0),
+                                            new BigDecimal(101.0), "GBP",
+                                            OffsetDateTime.of(2018, 1, 1, 0, 0, 0, 0, ZoneOffset.UTC), "Buy"));
+            newTransactions.add(
+                            testDataUtilities.buildTransactionRequest(instrumentIds.get(1), new BigDecimal(100.0),
+                                            new BigDecimal(102.0), "GBP",
+                                            OffsetDateTime.of(2018, 1, 2, 0, 0, 0, 0, ZoneOffset.UTC), "Buy"));
+            newTransactions.add(
+                            testDataUtilities.buildTransactionRequest(instrumentIds.get(2), new BigDecimal(100.0),
+                                            new BigDecimal(103.0), "GBP",
+                                            OffsetDateTime.of(2018, 1, 3, 0, 0, 0, 0, ZoneOffset.UTC), "Buy"));
 
-        //  add initial batch of transactions
-        final UpsertPortfolioTransactionsResponse  initialResult = transactionPortfoliosApi.upsertTransactions(TutorialScope, portfolioId, newTransactions);
+            // add initial batch of transactions
+            final UpsertPortfolioTransactionsResponse initialResult = transactionPortfoliosApi
+                            .upsertTransactions(TutorialScope, portfolioId, newTransactions).execute();
 
-        OffsetDateTime    asAtBatch1 = initialResult.getVersion().getAsAtDate();
+            OffsetDateTime asAtBatch1 = initialResult.getVersion().getAsAtDate();
 
-        //  add another trade for 2018-1-8
-        TransactionRequest  newTrade = testDataUtilities.buildTransactionRequest(instrumentIds.get(3), new BigDecimal(100.0), new BigDecimal(104.0), "GBP", OffsetDateTime.of(2018, 1, 8, 0, 0, 0, 0, ZoneOffset.UTC), "Buy");
-        UpsertPortfolioTransactionsResponse addedResult = transactionPortfoliosApi.upsertTransactions(TutorialScope, portfolioId, Collections.singletonList(newTrade));
+            // add another trade for 2018-1-8
+            TransactionRequest newTrade = testDataUtilities.buildTransactionRequest(instrumentIds.get(3),
+                            new BigDecimal(100.0), new BigDecimal(104.0), "GBP",
+                            OffsetDateTime.of(2018, 1, 8, 0, 0, 0, 0, ZoneOffset.UTC), "Buy");
+            UpsertPortfolioTransactionsResponse addedResult = transactionPortfoliosApi.upsertTransactions(
+                            TutorialScope,
+                            portfolioId, Collections.singletonList(newTrade)).execute();
 
-        OffsetDateTime    asAtBatch2 = addedResult.getVersion().getAsAtDate();
-        Thread.sleep(500);
+            OffsetDateTime asAtBatch2 = addedResult.getVersion().getAsAtDate();
+            Thread.sleep(500);
 
-        //  add back-dated trade
-        TransactionRequest  backDatedTrade = testDataUtilities.buildTransactionRequest(instrumentIds.get(4), new BigDecimal(100.0), new BigDecimal(105.0), "GBP", OffsetDateTime.of(2018, 1, 5, 0, 0, 0, 0, ZoneOffset.UTC), "Buy");
-        UpsertPortfolioTransactionsResponse backDatedResult = transactionPortfoliosApi.upsertTransactions(TutorialScope, portfolioId, Collections.singletonList(backDatedTrade));
+            // add back-dated trade
+            TransactionRequest backDatedTrade = testDataUtilities.buildTransactionRequest(instrumentIds.get(4),
+                            new BigDecimal(100.0), new BigDecimal(105.0), "GBP",
+                            OffsetDateTime.of(2018, 1, 5, 0, 0, 0, 0, ZoneOffset.UTC), "Buy");
+            UpsertPortfolioTransactionsResponse backDatedResult = transactionPortfoliosApi.upsertTransactions(
+                            TutorialScope,
+                            portfolioId, Collections.singletonList(backDatedTrade)).execute();
 
-        OffsetDateTime    asAtBatch3 = backDatedResult.getVersion().getAsAtDate();
-        Thread.sleep(500);
+            OffsetDateTime asAtBatch3 = backDatedResult.getVersion().getAsAtDate();
+            Thread.sleep(500);
 
-        //  list transactions
-        VersionedResourceListOfTransaction transactions = transactionPortfoliosApi.getTransactions(TutorialScope, portfolioId, null, null, asAtBatch1, null, null, null, null, null, null);
+            // list transactions
+            VersionedResourceListOfTransaction transactions = transactionPortfoliosApi.getTransactions(
+                            TutorialScope,
+                            portfolioId).asAt(asAtBatch1).execute();
 
-        assertEquals(String.format("asAt %s", asAtBatch1),3, transactions.getValues().size());
-        System.out.println("transactions at " + asAtBatch1);
-        printTransactions.accept(transactions.getValues());
+            assertEquals(String.format("asAt %s", asAtBatch1), 3, transactions.getValues().size());
+            System.out.println("transactions at " + asAtBatch1);
+            printTransactions.accept(transactions.getValues());
 
-        transactions = transactionPortfoliosApi.getTransactions(TutorialScope, portfolioId, null, null, asAtBatch2, null, null, null, null, null, null);
+            transactions = transactionPortfoliosApi.getTransactions(TutorialScope, portfolioId).asAt(asAtBatch2).execute();
 
-        assertEquals(String.format("asAt %s", asAtBatch2),4, transactions.getValues().size());
-        System.out.println("transactions at " + asAtBatch2);
-        printTransactions.accept(transactions.getValues());
+            assertEquals(String.format("asAt %s", asAtBatch2), 4, transactions.getValues().size());
+            System.out.println("transactions at " + asAtBatch2);
+            printTransactions.accept(transactions.getValues());
 
-        transactions = transactionPortfoliosApi.getTransactions(TutorialScope, portfolioId, null, null, asAtBatch3, null, null, null, null, null, null);
+            transactions = transactionPortfoliosApi.getTransactions(TutorialScope, portfolioId).asAt(asAtBatch3).execute();
 
-        assertEquals(String.format("asAt %s", asAtBatch3), 5, transactions.getValues().size());
-        System.out.println("transactions at " + asAtBatch3);
-        printTransactions.accept(transactions.getValues());
+            assertEquals(String.format("asAt %s", asAtBatch3), 5, transactions.getValues().size());
+            System.out.println("transactions at " + asAtBatch3);
+            printTransactions.accept(transactions.getValues());
 
-        //  latest transactions
-        transactions = transactionPortfoliosApi.getTransactions(TutorialScope, portfolioId, null, null, null, null, null, null, null, null, null);
+            // latest transactions
+            transactions = transactionPortfoliosApi.getTransactions(TutorialScope, portfolioId).execute();
 
-        assertEquals(5, transactions.getValues().size());
-        System.out.println("transactions at " + OffsetDateTime.now());
-        printTransactions.accept(transactions.getValues());
+            assertEquals(5, transactions.getValues().size());
+            System.out.println("transactions at " + OffsetDateTime.now());
+            printTransactions.accept(transactions.getValues());
     }
 }
