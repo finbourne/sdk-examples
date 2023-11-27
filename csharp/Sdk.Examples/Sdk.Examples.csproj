@@ -13,4 +13,9 @@
         <PackageReference Include="NUnit3TestAdapter" Version="4.5.0" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Horizon\Tutorials\" />
+      <Folder Include="Horizon\Utilities\" />
+    </ItemGroup>
+
 </Project>
