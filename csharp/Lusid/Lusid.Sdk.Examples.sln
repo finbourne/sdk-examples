@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Examples", "Sdk.Examples\Sdk.Examples.csproj", "{9F228A5B-B959-49ED-A560-D32C29E522C4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lusid.Sdk.Examples", "Lusid.Sdk.Examples\Lusid.Sdk.Examples.csproj", "{9F228A5B-B959-49ED-A560-D32C29E522C4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
