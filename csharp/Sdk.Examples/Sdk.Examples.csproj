@@ -15,7 +15,8 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Horizon\Tutorials\" />
+      <Folder Include="Horizon\Tutorials\Instrument\" />
+      <Folder Include="Horizon\Tutorials\Vendor\" />
       <Folder Include="Horizon\Utilities\" />
     </ItemGroup>
 
