@@ -4,9 +4,9 @@ using System.Linq;
 using Lusid.Sdk.Api;
 using Lusid.Sdk.Model;
 using NUnit.Framework;
-using Sdk.Examples.Utilities;
+using Sdk.Examples.Lusid.Utilities;
 
-namespace Sdk.Examples.Tutorials.Ibor
+namespace Sdk.Examples.Lusid.Tutorials.Ibor
 {
     /// <summary>
     /// Set up to create a ILusidApiFactory which is used to make calls to the

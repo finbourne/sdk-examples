@@ -2,11 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Lusid.Sdk.Api;
-using Lusid.Sdk.Model;
 using Lusid.Sdk.Extensions;
+using Lusid.Sdk.Model;
 using NUnit.Framework;
 
-namespace Sdk.Examples.Utilities
+namespace Sdk.Examples.Lusid.Utilities
 {
     public class InstrumentLoader
     {

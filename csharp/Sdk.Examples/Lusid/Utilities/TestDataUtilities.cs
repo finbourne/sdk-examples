@@ -6,7 +6,7 @@ using Lusid.Sdk;
 using Lusid.Sdk.Model;
 using NUnit.Framework;
 
-namespace Sdk.Examples.Utilities
+namespace Sdk.Examples.Lusid.Utilities
 {
     public static class TestDataUtilities
     {

@@ -1,7 +1,7 @@
 using Lusid.Sdk.Api;
 using Lusid.Sdk.Extensions;
 
-namespace Sdk.Examples.Utilities
+namespace Sdk.Examples.Lusid.Utilities
 {
     public class TutorialBase
     {
