@@ -6,9 +6,9 @@ using Lusid.Sdk.Api;
 using Lusid.Sdk.Client;
 using Lusid.Sdk.Model;
 using NUnit.Framework;
-using Sdk.Examples.Utilities;
+using Sdk.Examples.Lusid.Utilities;
 
-namespace Sdk.Examples.Tutorials.MarketData
+namespace Sdk.Examples.Lusid.Tutorials.MarketData
 {
     [TestFixture]
     public class CorporateActions : TutorialBase

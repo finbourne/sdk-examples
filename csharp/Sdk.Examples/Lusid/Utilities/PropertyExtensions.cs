@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Lusid.Sdk.Model;
 
-namespace Sdk.Examples.Utilities
+namespace Sdk.Examples.Lusid.Utilities
 {
     /// <summary>
     /// Utilities for working with Properties.

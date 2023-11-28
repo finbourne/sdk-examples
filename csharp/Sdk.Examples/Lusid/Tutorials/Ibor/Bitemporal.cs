@@ -4,9 +4,9 @@ using System.Threading;
 using Lusid.Sdk.Api;
 using Lusid.Sdk.Model;
 using NUnit.Framework;
-using Sdk.Examples.Utilities;
+using Sdk.Examples.Lusid.Utilities;
 
-namespace Sdk.Examples.Tutorials.Ibor
+namespace Sdk.Examples.Lusid.Tutorials.Ibor
 {
     [TestFixture]
     public class Bitemporal: TutorialBase

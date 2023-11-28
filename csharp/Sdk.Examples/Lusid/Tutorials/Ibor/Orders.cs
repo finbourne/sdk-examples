@@ -7,9 +7,9 @@ using Lusid.Sdk.Api;
 using Lusid.Sdk.Client;
 using Lusid.Sdk.Model;
 using NUnit.Framework;
-using Sdk.Examples.Utilities;
+using Sdk.Examples.Lusid.Utilities;
 
-namespace Sdk.Examples.Tutorials.Ibor
+namespace Sdk.Examples.Lusid.Tutorials.Ibor
 {
     /// <summary>
     /// Orders represent an instruction from an investor to buy or sell a quantity of a specific

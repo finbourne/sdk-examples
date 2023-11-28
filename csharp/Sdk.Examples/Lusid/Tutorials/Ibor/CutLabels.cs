@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using Lusid.Sdk.Model;
 using NUnit.Framework;
-using Sdk.Examples.Utilities;
+using Sdk.Examples.Lusid.Utilities;
 
-namespace Sdk.Examples.Tutorials.Ibor
+namespace Sdk.Examples.Lusid.Tutorials.Ibor
 {
     [TestFixture]
     public class CutLabels: TutorialBase
@@ -305,7 +305,7 @@ namespace Sdk.Examples.Tutorials.Ibor
                 {
                     CutLabelDefinitionsApi.DeleteCutLabelDefinition(labelCode);
                 }
-                catch (Lusid.Sdk.Client.ApiException e)
+                catch (global::Lusid.Sdk.Client.ApiException e)
                 {
                     // 404 means that the cut label does not exist, so no need to throw the exception
                     if (e.ErrorCode != 404) throw;
