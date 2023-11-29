@@ -20,4 +20,8 @@
       <Folder Include="Horizon\Utilities\" />
     </ItemGroup>
 
+    <ItemGroup>
+        <None Include="secrets.json" CopyToOutputDirectory="Always" Condition="Exists('secrets.json')" />
+    </ItemGroup>
+
 </Project>
