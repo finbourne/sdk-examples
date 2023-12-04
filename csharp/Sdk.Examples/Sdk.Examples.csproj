@@ -15,12 +15,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Horizon\Tutorials\Instrument\" />
-      <Folder Include="Horizon\Tutorials\Vendor\" />
-      <Folder Include="Horizon\Utilities\" />
-    </ItemGroup>
-
-    <ItemGroup>
         <None Include="secrets.json" CopyToOutputDirectory="Always" Condition="Exists('secrets.json')" />
     </ItemGroup>
 
