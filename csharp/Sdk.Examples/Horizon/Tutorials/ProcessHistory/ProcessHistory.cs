@@ -24,7 +24,7 @@ namespace Sdk.Examples.Horizon.Tutorials.ProcessHistory
                 new DateTimeOffset(2018, 1, 1, 0, 0, 0, TimeSpan.Zero),
                 "Create event"
             );
-            var createEventTask = ProcessHistoryApi.CreateUpdateEventAsync(auditUpdateRequest);
+            var createEventResult = await ProcessHistoryApi.CreateUpdateEventAsync(auditUpdateRequest);
 
             var auditCompleteRequest = new AuditCompleteRequest(
                 "CreateThenCompleteEvent",
@@ -40,13 +40,11 @@ namespace Sdk.Examples.Horizon.Tutorials.ProcessHistory
                 0,
                 new List<AuditFileDetails> { new(AuditFileType.SourceData, "path/to/file/fileName") }
             );
-            var completeEventTask = ProcessHistoryApi.CreateCompleteEventAsync(auditCompleteRequest);
+            var completeEventResult = await ProcessHistoryApi.CreateCompleteEventAsync(auditCompleteRequest);
 
-            var createEventResult = await createEventTask;
             Assert.That(createEventResult, Is.Not.Null);
             Assert.That(createEventResult.ProcessName.Contains("CreateThenCompleteEvent"));
 
-            var completeEventResult = await completeEventTask;
             Assert.That(completeEventResult, Is.Not.Null);
             Assert.That(completeEventResult.ProcessName.Contains("CreateThenCompleteEvent"));
         }
