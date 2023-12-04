@@ -13,7 +13,6 @@ namespace Sdk.Examples.Horizon.Utilities
 
         protected TutorialBase()
         {
-            Console.WriteLine(System.IO.Directory.GetCurrentDirectory());
             // Initialize all the API end points
             ApiFactory = TestHorizonApiFactoryBuilder.CreateApiFactory("secrets.json");
             InstrumentApi = ApiFactory.Api<IInstrumentApi>();
