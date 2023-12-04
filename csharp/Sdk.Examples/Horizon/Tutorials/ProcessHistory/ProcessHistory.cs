@@ -17,22 +17,31 @@ namespace Sdk.Examples.Horizon.Tutorials.ProcessHistory
         [Test, Order(1)]
         public async Task Create_Update_And_Complete_Event()
         {
+            // Declare args shared between API calls
+            const string id = "CreateThenCompleteEvent";
+            const string userId = "ProcessHistoryTutorial";
+            var guid = new Guid("91d94df8-f717-41f8-a2a5-e498e41096e5");
+            var startTime = new DateTimeOffset(2018, 1, 1, 0, 0, 0, TimeSpan.Zero);
+            const string message = "Create event";
+            
+            // Create new event
             var auditUpdateRequest = new AuditUpdateRequest(
-                "CreateThenCompleteEvent",
-                "ProcessHistoryTutorial",
-                new Guid("91d94df8-f717-41f8-a2a5-e498e41096e5"),
-                new DateTimeOffset(2018, 1, 1, 0, 0, 0, TimeSpan.Zero),
-                "Create event"
+                id,
+                userId,
+                guid,
+                startTime,
+                message
             );
             var createEventResult = await ProcessHistoryApi.CreateUpdateEventAsync(auditUpdateRequest);
 
+            // Complete existing event
             var auditCompleteRequest = new AuditCompleteRequest(
-                "CreateThenCompleteEvent",
-                "ProcessHistoryTutorial",
-                new Guid("91d94df8-f717-41f8-a2a5-e498e41096e5"),
-                new DateTimeOffset(2018, 1, 1, 0, 0, 0, TimeSpan.Zero),
+                id,
+                userId,
+                guid,
+                startTime,
                 new DateTimeOffset(2018, 1, 2, 0, 0, 0, TimeSpan.Zero),
-                "Complete event",
+                message,
                 AuditCompleteStatus.Succeeded,
                 0,
                 0,
@@ -42,10 +51,8 @@ namespace Sdk.Examples.Horizon.Tutorials.ProcessHistory
             );
             var completeEventResult = await ProcessHistoryApi.CreateCompleteEventAsync(auditCompleteRequest);
 
-            Assert.That(createEventResult, Is.Not.Null);
+            // Check calls succeeded
             Assert.That(createEventResult.ProcessName.Contains("CreateThenCompleteEvent"));
-
-            Assert.That(completeEventResult, Is.Not.Null);
             Assert.That(completeEventResult.ProcessName.Contains("CreateThenCompleteEvent"));
         }
         
