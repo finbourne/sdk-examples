@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
+using System.Threading.Tasks;
 using Finbourne.Horizon.Sdk.Api;
 using Finbourne.Horizon.Sdk.Client;
 using Finbourne.Horizon.Sdk.Model;
@@ -13,74 +14,48 @@ namespace Sdk.Examples.Horizon.Tutorials.ProcessHistory
     [TestFixture]
     public class ProcessHistory : TutorialBase
     {
-        [OneTimeSetUp]
-        public void SetUp()
+        [Test, Order(1)]
+        public async Task Create_Update_And_Complete_Event()
         {
+            var auditUpdateRequest = new AuditUpdateRequest(
+                "CreateThenCompleteEvent",
+                "ProcessHistoryTutorial",
+                new Guid("91d94df8-f717-41f8-a2a5-e498e41096e5"),
+                new DateTimeOffset(2018, 1, 1, 0, 0, 0, TimeSpan.Zero),
+                "Create event"
+            );
+            var createEventTask = ProcessHistoryApi.CreateUpdateEventAsync(auditUpdateRequest);
 
-        }
-
-        [OneTimeTearDown]
-        public void TearDown()
-        {
-
-        }
-
-        [Test]
-        public void Get_Latest_Runs()
-        {
-            var processInformation = ProcessHistoryApi.GetLatestRuns();
-            // Console.WriteLine(processInformation.ToString());
-        }
-
-        [Test]
-        public void Process_History_Entries()
-        {
-            var body = "{}";
-            var processInformation = ProcessHistoryApi.ProcessHistoryEntries(body);
-            // Console.WriteLine(processInformation.ToString());
-        }
-
-        [Test]
-        public void Process_Entry_Updates()
-        {
-            var body = "{}";
-            var processUpdateResult = ProcessHistoryApi.ProcessEntryUpdates(body);
-            // Console.WriteLine(processUpdateResult.ToString());
-        }
-
-        [Test]
-        public void Create_Complete_Event()
-        {
             var auditCompleteRequest = new AuditCompleteRequest(
-                "string",
-                "string",
-                new Guid("3fa85f64-5717-4562-b3fc-2c963f66afa6"),
+                "CreateThenCompleteEvent",
+                "ProcessHistoryTutorial",
+                new Guid("91d94df8-f717-41f8-a2a5-e498e41096e5"),
                 new DateTimeOffset(2018, 1, 1, 0, 0, 0, TimeSpan.Zero),
-                new DateTimeOffset(2018, 1, 1, 0, 0, 0, TimeSpan.Zero),
-                "string",
+                new DateTimeOffset(2018, 1, 2, 0, 0, 0, TimeSpan.Zero),
+                "Complete event",
                 AuditCompleteStatus.Succeeded,
                 0,
                 0,
                 0,
                 0,
-                new List<AuditFileDetails>{new AuditFileDetails(AuditFileType.SourceData, "string")}
+                new List<AuditFileDetails> { new(AuditFileType.SourceData, "path/to/file/fileName") }
             );
-            var processUpdateResult = ProcessHistoryApi.CreateCompleteEvent(auditCompleteRequest);
-            // Console.WriteLine(processUpdateResult.ToString());
-        }
+            var completeEventTask = ProcessHistoryApi.CreateCompleteEventAsync(auditCompleteRequest);
 
-        [Test]
-        public void Create_Update_Event()
+            var createEventResult = await createEventTask;
+            Assert.That(createEventResult, Is.Not.Null);
+            Assert.That(createEventResult.ProcessName.Contains("CreateThenCompleteEvent"));
+
+            var completeEventResult = await completeEventTask;
+            Assert.That(completeEventResult, Is.Not.Null);
+            Assert.That(completeEventResult.ProcessName.Contains("CreateThenCompleteEvent"));
+        }
+        
+        [Test, Order(2)]
+        public async Task Get_Latest_Runs()
         {
-            var auditUpdateRequest = new AuditUpdateRequest(
-                "string",
-                "string",
-                new Guid("3fa85f64-5717-4562-b3fc-2c963f66afa6"),
-                new DateTimeOffset(2018, 1, 1, 0, 0, 0, TimeSpan.Zero),
-                "string"
-            );
-            var processUpdateResult = ProcessHistoryApi.CreateUpdateEvent(auditUpdateRequest);
-            // Console.WriteLine(processUpdateResult.ToString());
+            var processInformation = await ProcessHistoryApi.GetLatestRunsAsync();
+            Assert.That(processInformation, Has.Count.GreaterThanOrEqualTo(2));
         }
     }
 }
