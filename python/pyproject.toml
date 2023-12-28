@@ -5,7 +5,7 @@ description = ""
 authors = ["FINBOURNE Technology <engineering@finbourne.com>"]
 license = "MIT"
 readme = "README.md"
-packages = [{include = "lusid_sdk_examples"}]
+packages = []
 
 [tool.poetry.dependencies]
 python = "^3.9"
