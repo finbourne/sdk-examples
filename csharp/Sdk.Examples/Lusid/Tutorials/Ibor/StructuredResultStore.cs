@@ -107,7 +107,7 @@ namespace Sdk.Examples.Lusid.Tutorials.Ibor
 
             // Create and upsert the recipe
             var configurationRecipe = new ConfigurationRecipe(scope, portfolioCode, new MarketContext(), pricingContext);
-            var upsertRecipeRequest = new UpsertRecipeRequest(configurationRecipe, null);
+            var upsertRecipeRequest = new UpsertRecipeRequest(configurationRecipe);
             RecipeApi.UpsertConfigurationRecipe(upsertRecipeRequest);
 
 
@@ -257,7 +257,7 @@ namespace Sdk.Examples.Lusid.Tutorials.Ibor
             var pricingOptions = new PricingOptions { AllowAnyInstrumentsWithSecUidToPriceOffLookup = false, AllowPartiallySuccessfulEvaluation = true };
             var pricingContext = new PricingContext(null, null, pricingOptions, new List<ResultKeyRule> { resultDataKeyRule });
             var configurationRecipe = new ConfigurationRecipe(documentScope, "recipe", new MarketContext(), pricingContext);
-            var upsertRecipeRequest = new UpsertRecipeRequest(configurationRecipe, null);
+            var upsertRecipeRequest = new UpsertRecipeRequest(configurationRecipe);
             RecipeApi.UpsertConfigurationRecipe(upsertRecipeRequest);
 
             // Creating a valuation request, in which we request portfolio id, YtD, and some user key.
@@ -497,7 +497,7 @@ namespace Sdk.Examples.Lusid.Tutorials.Ibor
             var pricingOptions = new PricingOptions { AllowAnyInstrumentsWithSecUidToPriceOffLookup = false, AllowPartiallySuccessfulEvaluation = true };
             var pricingContext = new PricingContext(null, null, pricingOptions, new List<ResultKeyRule> { resultDataKeyRule });
             var configurationRecipe = new ConfigurationRecipe(documentScope, "recipe", new MarketContext(), pricingContext);
-            var upsertRecipeRequest = new UpsertRecipeRequest(configurationRecipe, null);
+            var upsertRecipeRequest = new UpsertRecipeRequest(configurationRecipe);
             RecipeApi.UpsertConfigurationRecipe(upsertRecipeRequest);
 
             // Create a valuation request, requesting multiple results including Strategy and Country.
@@ -681,7 +681,7 @@ namespace Sdk.Examples.Lusid.Tutorials.Ibor
             var pricingOptions = new PricingOptions { AllowAnyInstrumentsWithSecUidToPriceOffLookup = false, AllowPartiallySuccessfulEvaluation = true };
             var pricingContext = new PricingContext(null, null, pricingOptions, new List<ResultKeyRule> { resultDataKeyRule });
             var configurationRecipe = new ConfigurationRecipe(documentScope, "recipe", new MarketContext(), pricingContext);
-            var upsertRecipeRequest = new UpsertRecipeRequest(configurationRecipe, null);
+            var upsertRecipeRequest = new UpsertRecipeRequest(configurationRecipe);
             RecipeApi.UpsertConfigurationRecipe(upsertRecipeRequest);
 
             // Create a valuation request, requesting LusidInstrument Id, Pv amount and UserDefinedData
