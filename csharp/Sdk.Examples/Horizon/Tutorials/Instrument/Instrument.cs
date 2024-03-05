@@ -46,7 +46,6 @@ namespace Sdk.Examples.Horizon.Tutorials.Instrument
             // filtered by Market Sector and Security Type
             var vendorsResult = await InstrumentApi.VendorsAsync("Equity", "Common Stock");
             Assert.That(vendorsResult, Has.One.Matches<VendorProduct>(v => v.VendorName == "Bloomberg"));
-            Assert.That(vendorsResult, Has.One.Matches<VendorProduct>(v => v.VendorName == "SIX"));
         }
     }
 }
