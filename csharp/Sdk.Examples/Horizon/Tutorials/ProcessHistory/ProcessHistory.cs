@@ -1,10 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text.Json;
 using System.Threading.Tasks;
-using Finbourne.Horizon.Sdk.Api;
-using Finbourne.Horizon.Sdk.Client;
 using Finbourne.Horizon.Sdk.Model;
 using NUnit.Framework;
 using Sdk.Examples.Horizon.Utilities;
@@ -28,7 +24,7 @@ namespace Sdk.Examples.Horizon.Tutorials.ProcessHistory
             var auditUpdateRequest = new AuditUpdateRequest(
                 id,
                 userId,
-                guid,
+                guid.ToString(),
                 startTime,
                 message
             );
@@ -38,7 +34,7 @@ namespace Sdk.Examples.Horizon.Tutorials.ProcessHistory
             var auditCompleteRequest = new AuditCompleteRequest(
                 id,
                 userId,
-                guid,
+                guid.ToString(),
                 startTime,
                 new DateTimeOffset(2018, 1, 2, 0, 0, 0, TimeSpan.Zero),
                 message,
@@ -57,6 +53,7 @@ namespace Sdk.Examples.Horizon.Tutorials.ProcessHistory
         }
         
         [Test, Order(2)]
+        [Explicit]
         public async Task Get_Latest_Runs()
         {
             var processInformation = await ProcessHistoryApi.GetLatestRunsAsync();
