@@ -1,3 +1,6 @@
+
+export FBN_BASE_API_URL := "https://fbn-ci.lusid.com"
+
 test-csharp:
     docker run -t \
         -e FBN_LUSID_API_URL=${FBN_LUSID_API_URL} \
