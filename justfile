@@ -9,6 +9,7 @@ test-csharp:
         -e FBN_LUSID_API_URL=${FBN_LUSID_API_URL} \
         -e FBN_APP_NAME=${FBN_APP_NAME} \
         -e FBN_PASSWORD=${FBN_PASSWORD} \
+        -e FBN_FINBOURNE_HORIZON_API_URL=${FBN_BASE_API_URL}/horizon \
         -w /usr/src/ \
         -v $(pwd)/csharp/:/usr/src/ \
         mcr.microsoft.com/dotnet/sdk:6.0 dotnet test
