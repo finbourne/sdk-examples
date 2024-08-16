@@ -43,8 +43,8 @@ namespace Sdk.Examples.Horizon.Tutorials.Instrument
             Assert.That(allowedSecurityType.Contains(new AllowedParameterValue("Common Stock")));
 
             // Get VendorProducts of any supported and licensed integrations
-            // filtered by Market Sector and Security Type
-            var vendorsResult = await InstrumentApi.VendorsAsync("Equity", "Common Stock");
+            // filtered by Market Sector, Security Type and General Security Type
+            var vendorsResult = await InstrumentApi.VendorsAsync("Equity", "Common Stock", "Common Stock");
             Assert.That(vendorsResult, Has.One.Matches<VendorProduct>(v => v.VendorName == "Bloomberg"));
         }
     }
